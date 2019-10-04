@@ -154,6 +154,46 @@ public final class Utilities {
         }
     }
 
+    /**
+     * Marshal notification compatibly with the Binary Provider API
+     * https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/BinaryProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH13-SW1
+     */
+    public static byte[] marshallEnhanced2(final int identifier,
+            final int expiryTime, final byte[] deviceToken, final byte[] payload, final byte priority) {
+        final ByteArrayOutputStream boas = new ByteArrayOutputStream();
+        final DataOutputStream dos = new DataOutputStream(boas);
+        final ByteArrayOutputStream frameOutput = new ByteArrayOutputStream();
+        final DataOutputStream frameDataOutput = new DataOutputStream(frameOutput);
+
+        try {
+            frameDataOutput.writeByte(1); // ID = 1
+            frameDataOutput.writeShort(deviceToken.length);
+            frameDataOutput.write(deviceToken);
+            frameDataOutput.writeByte(2); // ID = 2
+            frameDataOutput.writeShort(payload.length);
+            frameDataOutput.write(payload);
+            frameDataOutput.writeByte(3); // ID = 3
+            frameDataOutput.writeShort(4);
+            frameDataOutput.writeInt(identifier);
+            frameDataOutput.writeByte(4); // ID = 4
+            frameDataOutput.writeShort(4);
+            frameDataOutput.writeInt(expiryTime);
+            frameDataOutput.writeByte(5); // ID = 5
+            frameDataOutput.writeShort(1);
+            frameDataOutput.writeByte(priority);
+
+            byte[] frameData = frameOutput.toByteArray();
+
+            dos.writeByte(2); // Command = 2
+            dos.writeInt(frameData.length);
+            dos.write(frameData);
+
+            return boas.toByteArray();
+        } catch (final IOException e) {
+            throw new AssertionError();
+        }
+    }
+
     public static Map<byte[], Integer> parseFeedbackStreamRaw(final InputStream in) {
         final Map<byte[], Integer> result = new HashMap<byte[], Integer>();
 

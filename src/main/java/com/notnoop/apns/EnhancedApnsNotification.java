@@ -50,6 +50,7 @@ public class EnhancedApnsNotification implements ApnsNotification {
     private final int expiry;
     private final byte[] deviceToken;
     private final byte[] payload;
+    private final byte priority;
 
     public static int INCREMENT_ID() {
         return nextId.incrementAndGet();
@@ -70,11 +71,18 @@ public class EnhancedApnsNotification implements ApnsNotification {
      */
     public EnhancedApnsNotification(
             int identifier, int expiryTime,
-            String dtoken, String payload) {
+            String dtoken, String payload, int priority) {
         this.identifier = identifier;
         this.expiry = expiryTime;
         this.deviceToken = Utilities.decodeHex(dtoken);
         this.payload = Utilities.toUTF8Bytes(payload);
+        this.priority = (byte) priority;
+    }
+
+    public EnhancedApnsNotification(
+            int identifier, int expiryTime,
+            String dtoken, String payload) {
+        this(identifier, expiryTime, dtoken, payload, 10); // default priority
     }
 
     /**
@@ -90,6 +98,7 @@ public class EnhancedApnsNotification implements ApnsNotification {
         this.expiry = expiryTime;
         this.deviceToken = Utilities.copyOf(dtoken);
         this.payload = Utilities.copyOf(payload);
+        this.priority = 10; // default priority
     }
 
     /**
@@ -126,8 +135,10 @@ public class EnhancedApnsNotification implements ApnsNotification {
      */
     public byte[] marshall() {
         if (marshall == null) {
-            marshall = Utilities.marshallEnhanced(COMMAND, identifier,
-                    expiry, deviceToken, payload);
+            marshall = Utilities.marshallEnhanced2(identifier,
+                    expiry, deviceToken, payload, priority);
+            // marshall = Utilities.marshallEnhanced(COMMAND, identifier,
+            //         expiry, deviceToken, payload, priority);
         }
         return marshall.clone();
     }

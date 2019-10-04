@@ -57,6 +57,13 @@ abstract class AbstractApnsService implements ApnsService {
         return notification;
     }
 
+    public EnhancedApnsNotification push(String deviceToken, String payload, int priority) throws NetworkIOException {
+        EnhancedApnsNotification notification =
+            new EnhancedApnsNotification(c.incrementAndGet(), EnhancedApnsNotification.MAXIMUM_EXPIRY, deviceToken, payload, priority);
+        push(notification);
+        return notification;
+    }
+
     public EnhancedApnsNotification push(String deviceToken, String payload, Date expiry) throws NetworkIOException {
         EnhancedApnsNotification notification =
             new EnhancedApnsNotification(c.incrementAndGet(), (int)(expiry.getTime() / 1000), deviceToken, payload);
