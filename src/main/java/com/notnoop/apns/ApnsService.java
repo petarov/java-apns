@@ -60,6 +60,22 @@ public interface ApnsService {
      *
      * @param deviceToken   the destination iPhone device token
      * @param payload       The payload message
+     * @param priority      The priority of the message. This must be either 5 or 10.
+     * @throws NetworkIOException if a network error occurred while
+     *      attempting to send the message
+     */
+    ApnsNotification push(String deviceToken, String payload, int priority) throws NetworkIOException;
+
+    /**
+     * Sends a push notification with the provided {@code payload} to the
+     * iPhone of {@code deviceToken}.
+     *
+     * The payload needs to be a valid JSON object, otherwise it may fail
+     * silently.  It is recommended to use {@link PayloadBuilder} to create
+     * one.
+     *
+     * @param deviceToken   the destination iPhone device token
+     * @param payload       The payload message
      * @throws NetworkIOException if a network error occurred while
      *      attempting to send the message
      */
