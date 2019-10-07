@@ -82,7 +82,7 @@ public class EnhancedApnsNotification implements ApnsNotification {
     public EnhancedApnsNotification(
             int identifier, int expiryTime,
             String dtoken, String payload) {
-        this(identifier, expiryTime, dtoken, payload, 10); // default priority
+        this(identifier, expiryTime, dtoken, payload, -1); // no priority
     }
 
     /**
@@ -98,7 +98,7 @@ public class EnhancedApnsNotification implements ApnsNotification {
         this.expiry = expiryTime;
         this.deviceToken = Utilities.copyOf(dtoken);
         this.payload = Utilities.copyOf(payload);
-        this.priority = 10; // default priority
+        this.priority = -1; // no priority
     }
 
     /**
@@ -135,10 +135,15 @@ public class EnhancedApnsNotification implements ApnsNotification {
      */
     public byte[] marshall() {
         if (marshall == null) {
-            marshall = Utilities.marshallEnhanced2(identifier,
-                    expiry, deviceToken, payload, priority);
-            // marshall = Utilities.marshallEnhanced(COMMAND, identifier,
-            //         expiry, deviceToken, payload, priority);
+            if (priority != -1) {
+                // send message with priority and the Binary Provider API protocol
+                marshall = Utilities.marshallEnhanced2(identifier,
+                        expiry, deviceToken, payload, priority);
+            } else {
+                // send using the Legacy Format protocol
+                marshall = Utilities.marshallEnhanced(COMMAND, identifier,
+                        expiry, deviceToken, payload);
+            }
         }
         return marshall.clone();
     }
