@@ -3,11 +3,11 @@ Build status:
    * Main fork [![Build Status](https://travis-ci.org/notnoop/java-apns.png)](https://travis-ci.org/notnoop/java-apns)
    * Development [![Build Status](https://travis-ci.org/java-apns/java-apns.png)](https://travis-ci.org/java-apns/java-apns)
 
-:star This is a fork of [java-apns](https://github.com/notnoop/java-apns) that supports push notification [priorities](https://github.com/notnoop/java-apns/issues/366).
+:star: This is a fork of [java-apns](https://github.com/notnoop/java-apns) that supports push notification [priorities](https://github.com/notnoop/java-apns/issues/366).
 
 # IMPORTANT!
 
-As stated by Apple: :exclamation
+As stated by Apple: :exclamation:
 
     APNs will no longer support the legacy binary protocol as of November 2020.
 
